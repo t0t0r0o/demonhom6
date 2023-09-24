@@ -24,7 +24,7 @@ class login
             $user = $model->get_users($userid);
             session_start();
             $_SESSION['user'] = $user;
-            header('Location: dashboard.php?uID='.md5($userid));
+            header('Location: /info.php?name='. $username);
         } else {
             $error_message = "Tên đăng nhập hoặc mật khẩu không đúng.";
             include 'login_form.php';

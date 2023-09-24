@@ -60,7 +60,8 @@ if (isset($_SESSION['user'])) {
             </style>";
         }
         $result = $twig->render($text);
-        var_dump($result);
+        echo ($result);
+        echo $message;
     } catch (\Twig\Error\Error $e) {
         die('ERROR: ' . $e->getMessage());
     }

